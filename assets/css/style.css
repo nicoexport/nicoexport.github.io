@@ -8,6 +8,11 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+:root {
+  --accent: #6da18a;
+  --primary: #000000;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
   color: #272829;
@@ -221,7 +226,7 @@ h6 {
 .nav-menu .active:focus,
 .nav-menu li:hover>a {
   color: #fff;
-  background: #0563bb;
+  background: var(--accent);
 }
 
 .nav-menu a:hover span,
@@ -321,7 +326,7 @@ h6 {
 }
 
 #hero p span {
-  color: #0563bb;
+  color: var(--accent);
   letter-spacing: 1px;
 }
 

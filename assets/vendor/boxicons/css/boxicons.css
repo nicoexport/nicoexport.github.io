@@ -1067,6 +1067,9 @@
   .bxl-twitch:before {
     content: "\e981";
   }
+  .bxl-itch:before {
+    content: "\e980";
+  }
   .bxl-twitter:before {
     content: "\e982";
   }
