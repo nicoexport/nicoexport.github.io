@@ -11,6 +11,8 @@
 :root {
   --accent: #6da18a;
   --primary: #000000;
+  --portfolio-item-hover: rgba(114, 114, 114, 0.527);
+  --portfolio-item-text: #ffffff;
 }
 
 body {
@@ -288,7 +290,7 @@ h6 {
 --------------------------------------------------------------*/
 #hero {
   width: 100%;
-  height: 100vh;
+  height: 55vh;
   background: url("../img/topimg.png") top right no-repeat;
   background-size: cover;
   position: relative;
@@ -404,7 +406,7 @@ section {
   display: block;
   width: 40px;
   height: 3px;
-  background: #0563bb;
+  background: var(--accent);
   bottom: 0;
   left: calc(50% - 20px);
 }
@@ -619,7 +621,7 @@ section {
 
 .portfolio #portfolio-flters li:hover,
 .portfolio #portfolio-flters li.filter-active {
-  color: #0563bb;
+  color:var(--accent);
 }
 
 .portfolio #portfolio-flters li:last-child {
@@ -636,7 +638,7 @@ section {
 
 .portfolio .portfolio-wrap::before {
   content: "";
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--portfolio-item-hover);
   position: absolute;
   left: 30px;
   right: 30px;
@@ -671,8 +673,8 @@ section {
   position: absolute;
   top: 35px;
   left: 35px;
-  border-top: 3px solid #d7dce1;
-  border-left: 3px solid #d7dce1;
+  border-top: 0px solid #d7dce1;
+  border-left: 0px solid #d7dce1;
   transition: all 0.5s ease 0s;
   z-index: 9994;
 }
@@ -685,20 +687,20 @@ section {
   position: absolute;
   bottom: 35px;
   right: 35px;
-  border-bottom: 3px solid #d7dce1;
-  border-right: 3px solid #d7dce1;
+  border-bottom: 0px solid #d7dce1;
+  border-right: 0px solid #d7dce1;
   transition: all 0.5s ease 0s;
   z-index: 9994;
 }
 
 .portfolio .portfolio-wrap .portfolio-info h4 {
   font-size: 20px;
-  color: #45505b;
+  color: var(--portfolio-item-text);
   font-weight: 600;
 }
 
 .portfolio .portfolio-wrap .portfolio-info p {
-  color: #45505b;
+  color: var(--portfolio-item-text);
   font-size: 14px;
   text-transform: uppercase;
   padding: 0;
@@ -719,7 +721,7 @@ section {
 }
 
 .portfolio .portfolio-wrap .portfolio-links a:hover {
-  color: #148af9;
+  color: var(--accent);
 }
 
 .portfolio .portfolio-wrap:hover::before {
