@@ -14,6 +14,10 @@ const projects = defineCollection({
 			updatedDate: z.string().optional(),
 			heroImage: image().optional(),
 			category: z.string().optional(),
+			// Optional external links to the project
+			github: z.string().url().optional(),
+			steam: z.string().url().optional(),
+			itch: z.string().url().optional(),
 		}),
 });
 

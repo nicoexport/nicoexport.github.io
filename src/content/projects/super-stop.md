@@ -4,4 +4,5 @@ description: 'Can you make the jump?'
 year: '2024?'
 heroImage: '../../assets/super-stop-header.png'
 category: 'Game Jams'
+itch: 'https://derbrezel.itch.io/super-stop'
 ---
