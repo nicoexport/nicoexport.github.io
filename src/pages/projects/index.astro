@@ -4,6 +4,9 @@ import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
+import GitHubIconUrl from '../../assets/icons/github.svg?url';
+import SteamIconUrl from '../../assets/icons/steam.svg?url';
+import ItchIconUrl from '../../assets/icons/itch.svg?url';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
 const posts = (await getCollection('projects'));
@@ -54,6 +57,19 @@ const orderedCategories = categoryOrder.filter(cat => postsByCategory[cat]).conc
         object-fit: cover;
         display: block;
       }
+      .card-links { display:flex; gap:0.5rem; margin-top:0.5rem; align-items:center; line-height:0; }
+      .card-links a { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:6px; background: rgba(var(--gray),0.04); text-decoration:none; color:inherit; vertical-align:middle; position:relative; }
+      .card-links img {
+        display:block;
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        height:60%;
+        max-height:20px;
+        width:auto;
+        max-width:80%;
+      }
       .title { margin:0; color: rgb(var(--black)); line-height:1 }
       .date { margin:0; color: rgb(var(--gray)) }
     </style>
@@ -74,6 +90,27 @@ const orderedCategories = categoryOrder.filter(cat => postsByCategory[cat]).conc
                       <h4 class="title">{post.data.title}</h4>
                       <p class="date">{post.data.year}</p>
                     </a>
+                    {
+                      ((post.data.github && post.data.github.trim()) || (post.data.steam && post.data.steam.trim()) || (post.data.itch && post.data.itch.trim())) && (
+                        <div class="card-links">
+                          {post.data.github && post.data.github.trim() && (
+                            <a href={post.data.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                              <img src={GitHubIconUrl} alt="GitHub" />
+                            </a>
+                          )}
+                          {post.data.steam && post.data.steam.trim() && (
+                            <a href={post.data.steam} target="_blank" rel="noopener noreferrer" aria-label="Steam">
+                              <img src={SteamIconUrl} alt="Steam" />
+                            </a>
+                          )}
+                          {post.data.itch && post.data.itch.trim() && (
+                            <a href={post.data.itch} target="_blank" rel="noopener noreferrer" aria-label="itch.io">
+                              <img src={ItchIconUrl} alt="itch.io" />
+                            </a>
+                          )}
+                        </div>
+                      )
+                    }
                   </li>
                 ))
               }
