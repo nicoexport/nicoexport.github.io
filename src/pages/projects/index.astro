@@ -1,0 +1,78 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+const posts = (await getCollection('projects'));
+
+// Sort by start year (handles single year or ranges like "2019-2021")
+posts.sort((a, b) => {
+  const extract = (s: string) => {
+    const m = String(s).match(/(\d{4})/);
+    return m ? parseInt(m[1], 10) : 0;
+  };
+  return extract(b.data.year) - extract(a.data.year);
+});
+
+// Group posts by category
+const postsByCategory = posts.reduce((acc: Record<string, typeof posts>, post) => {
+  const category = post.data.category || 'Other';
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(post);
+  return acc;
+}, {});
+
+// Define category order
+const categoryOrder = ['Commercial', 'Academic', 'Student Projects', 'Jams and Other'];
+const orderedCategories = categoryOrder.filter(cat => postsByCategory[cat]).concat(
+  Object.keys(postsByCategory).filter(cat => !categoryOrder.includes(cat))
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <style>
+      main { width: 960px; }
+      .category-section { margin-bottom: 3rem; }
+      .category-section h2 { margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgb(var(--accent)); }
+      ul { display:flex; flex-wrap:wrap; gap:2rem; list-style:none; margin:0; padding:0 }
+      ul li { width: calc(50% - 1rem); }
+      ul li img { margin-bottom:0.5rem; border-radius:12px }
+      .title { margin:0; color: rgb(var(--black)); line-height:1 }
+      .date { margin:0; color: rgb(var(--gray)) }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      {
+        orderedCategories.map((category) => (
+          <section class="category-section">
+            <h2>{category}</h2>
+            <ul>
+              {
+                postsByCategory[category].map((post) => (
+                  <li>
+                    <a href={`/projects/${post.id}/`}>
+                      {post.data.heroImage && (<Image width={720} height={360} src={post.data.heroImage} alt="" />)}
+                      <h4 class="title">{post.data.title}</h4>
+                      <p class="date">{post.data.year}</p>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+        ))
+      }
+    </main>
+    <Footer />
+  </body>
+</html>

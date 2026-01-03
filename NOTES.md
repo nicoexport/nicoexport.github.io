@@ -4,6 +4,11 @@
 # Layout
 
 3 Pages
+
+- About 
+- Projects
+- Contact
+
 ## About
 
 ## Projects
