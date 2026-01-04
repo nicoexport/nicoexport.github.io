@@ -89,6 +89,7 @@ const orderedCategories = categoryOrder.filter(cat => postsByCategory[cat]).conc
                       {post.data.heroImage && (<Image width={720} height={360} src={post.data.heroImage} alt="" />)}
                       <h4 class="title">{post.data.title}</h4>
                       <p class="date">{post.data.year}</p>
+                      <p class="date">{post.data.description}</p>
                     </a>
                     {
                       ((post.data.github && post.data.github.trim()) || (post.data.steam && post.data.steam.trim()) || (post.data.itch && post.data.itch.trim())) && (
