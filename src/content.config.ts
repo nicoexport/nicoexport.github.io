@@ -6,7 +6,7 @@ const projects = defineCollection({
 	loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: ({ image }) =>
-		z.object({
+			z.object({
 			title: z.string(),
 			description: z.string(),
 			// Single year or range string, e.g. "2022" or "2019-2021"
@@ -14,6 +14,10 @@ const projects = defineCollection({
 			updatedDate: z.string().optional(),
 			heroImage: image().optional(),
 			category: z.string().optional(),
+				// Allow marking projects as selected for highlighting
+				selected: z.boolean().optional(),
+				// Optional tags array (e.g. ['selected'])
+				tags: z.array(z.string()).optional(),
 			// Optional external links to the project
 			github: z.string().url().optional(),
 			steam: z.string().url().optional(),

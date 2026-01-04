@@ -1,6 +1,11 @@
 ---
 import AboutHeroImage from '../assets/about-me-header.png';
 import Layout from '../layouts/BlogPost.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+const _allProjects = await getCollection('projects');
+const selectedProjects = _allProjects.filter((p) => (p.data && (p.data.selected === true || (p.data.tags && p.data.tags.includes('selected')))));
 ---
 
 <Layout
@@ -14,4 +19,34 @@ import Layout from '../layouts/BlogPost.astro';
 		I am a game developer with hands-on experience in Unity and Godot, specializing in gameplay systems, tools development, and graphics programming.
 		I am currently completing an MSc in Videogame Studies while teaching game development at university level and having shipped a commercial project.
 	</p>
+
+	<style>
+		.selected-projects ul { display:flex; flex-wrap:wrap; gap:2rem; list-style:none; margin:0; padding:0 }
+		.selected-projects ul li { width: calc(50% - 1rem); }
+		.selected-projects ul li a { text-decoration:none; display:block; color:inherit }
+		.selected-projects ul li img { margin-bottom:0.5rem; border-radius:12px; width:100%; height:auto; aspect-ratio:2 / 1; object-fit:cover; display:block }
+		.selected-projects h2 { margin-top:2rem; }
+		.selected-projects h4 { margin:0; color: rgb(var(--black)); line-height:1 }
+		.selected-projects p { margin:0; color: rgb(var(--gray)) }
+	</style>
+
+	{selectedProjects.length > 0 && (
+		<section class="selected-projects">
+			<h3>Selected Projects</h3>
+			<ul>
+				{selectedProjects.map((post) => (
+					<li>
+						<a href={`/projects/${post.id}/`}>
+							{post.data.heroImage && (
+								<Image width={720} height={360} src={post.data.heroImage} alt="" />
+							)}
+							<h4>{post.data.title}</h4>
+							<p>{post.data.year}</p>
+							<p>{post.data.description}</p>
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+	)}
 </Layout>

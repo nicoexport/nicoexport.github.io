@@ -5,6 +5,7 @@ year: '2025'
 heroImage: '../../assets/godot-softbodies-header.png'
 category: 'Student Projects'
 github: 'https://github.com/Argonbart/GoPrototyping/'
+selected: true
 ---
 
 ## Description
