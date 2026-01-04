@@ -1,6 +1,7 @@
 ---
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE, ITCH_URL } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import ItchIconUrl from '../assets/icons/itch.svg?url';
 ---
 
 <header>
@@ -39,6 +40,12 @@ import HeaderLink from './HeaderLink.astro';
 					></path></svg
 				>
 			</a>
+			{ITCH_URL && (
+				<a href={ITCH_URL} target="_blank">
+					<span class="sr-only">itch.io</span>
+					<img src={ItchIconUrl} alt="itch.io" />
+				</a>
+			)}
 		</div>
 	</nav>
 </header>
@@ -77,6 +84,7 @@ import HeaderLink from './HeaderLink.astro';
 	.social-links a {
 		display: flex;
 	}
+	.social-links img { width:32px; height:32px; display:block }
 	@media (max-width: 720px) {
 		.social-links {
 			display: none;

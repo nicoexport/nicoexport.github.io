@@ -3,3 +3,5 @@
 
 export const SITE_TITLE = 'Nico Auerswald';
 export const SITE_DESCRIPTION = 'Welcome to my website!';
+// Optional link to your itch.io profile (leave empty to hide the icon)
+export const ITCH_URL = 'https://nico-export.itch.io/';
