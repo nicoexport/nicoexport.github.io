@@ -10,6 +10,7 @@ import ItchIconUrl from '../assets/icons/itch.svg?url';
 type Props = CollectionEntry<'projects'>['data'];
 
 const { title, description, year, updatedDate, heroImage, github, steam, itch } = Astro.props as Props;
+const heroPortrait = (Astro.props as any).heroPortrait ?? false;
 ---
 
 <html lang="en">
@@ -35,6 +36,15 @@ const { title, description, year, updatedDate, heroImage, github, steam, itch } 
 				height: auto;
 				aspect-ratio: 2 / 1;
 				object-fit: cover;
+			}
+			.hero-image.portrait {
+				max-width: 420px;
+			}
+			.hero-image.portrait img {
+				aspect-ratio: auto;
+				object-fit: cover;
+				width: 100%;
+				height: auto;
 			}
 			.project-links {
 				display: flex;
@@ -98,8 +108,8 @@ const { title, description, year, updatedDate, heroImage, github, steam, itch } 
 		<Header />
 		<main>
 			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
+				<div class={"hero-image" + (heroPortrait ? " portrait" : "")}>
+					{heroImage && <Image width={heroPortrait ? 420 : 1020} height={heroPortrait ? 560 : 510} src={heroImage} alt="" />}
 				</div>
 					{((github && github.trim()) || (steam && steam.trim()) || (itch && itch.trim())) && (
 						<div class="project-links">
