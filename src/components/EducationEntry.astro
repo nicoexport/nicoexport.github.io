@@ -1,0 +1,60 @@
+---
+interface Props {
+	title: string;
+	institution: string;
+	period: string;
+	html: string;
+}
+
+const { title, institution, period, html } = Astro.props;
+---
+
+<div class="education-item">
+	<div class="education-header">
+		<h5>{title}</h5>
+	</div>
+    <span class="period">{period}</span>
+	<p class="institution">{institution}</p>
+	<div class="education-content" set:html={html} />
+</div>
+
+<style>
+	.education-item {
+		margin-bottom: 1.25rem;
+	}
+	.education-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		margin-bottom: 0.15rem;
+	}
+	.education-header h3 {
+		margin: 0;
+		font-size: 1.1em;
+	}
+	.period {
+		color: rgb(var(--gray));
+		font-size: 0.85em;
+		white-space: nowrap;
+	}
+	.institution {
+		margin: 0;
+		color: rgb(var(--gray));
+		font-style: italic;
+		margin-bottom: 0.5rem;
+		font-size: 0.95em;
+	}
+	.education-content :global(ul) {
+		margin: 0.25rem 0;
+		padding-left: 1.25rem;
+	}
+	.education-content :global(li) {
+		margin-bottom: 0.3rem;
+		font-size: 0.95em;
+	}
+	.education-content :global(p) {
+		margin: 0.25rem 0;
+		font-size: 0.95em;
+	}
+</style>

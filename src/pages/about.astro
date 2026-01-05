@@ -2,14 +2,21 @@
 import AboutHeroImage from '../assets/about-me-header.png';
 import Layout from '../layouts/BlogPost.astro';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
+import EducationEntry from '../components/EducationEntry.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
 const _allProjects = await getCollection('projects');
 const selectedProjects = _allProjects.filter((p) => (p.data && (p.data.selected === true || (p.data.tags && p.data.tags.includes('selected')))));
 const experienceEntries = await getCollection('experience');
+const educationEntries = await getCollection('education');
 
 const experience = experienceEntries.map((entry) => ({
+	...entry.data,
+	html: entry.rendered?.html || '',
+}));
+
+const education = educationEntries.map((entry) => ({
 	...entry.data,
 	html: entry.rendered?.html || '',
 }));
@@ -26,6 +33,20 @@ const sortedExperience = experience.sort((a, b) => {
 	const aFirstYear = parseInt(aYears.split('–')[0].trim());
 	const bFirstYear = parseInt(bYears.split('–')[0].trim());
 	return bFirstYear - aFirstYear;
+});
+
+const sortedEducation = education.sort((a, b) => {
+	const aPeriod = a.period;
+	const bPeriod = b.period;
+	// Prioritize ongoing education (with "Expected")
+	const aIsOngoing = aPeriod.includes('Expected');
+	const bIsOngoing = bPeriod.includes('Expected');
+	if (aIsOngoing && !bIsOngoing) return -1;
+	if (!aIsOngoing && bIsOngoing) return 1;
+	// Otherwise sort by year descending
+	const aYear = parseInt(aPeriod.match(/\d{4}/)?.[0] || '0');
+	const bYear = parseInt(bPeriod.match(/\d{4}/)?.[0] || '0');
+	return bYear - aYear;
 });
 ---
 
@@ -48,6 +69,18 @@ const sortedExperience = experience.sort((a, b) => {
 				title={entry.title}
 				company={entry.company}
 				years={entry.years}
+				html={entry.html}
+			/>
+		))}
+	</section>
+
+	<section class="education">
+		<h3>Education</h3>
+		{sortedEducation.map((entry) => (
+			<EducationEntry 
+				title={entry.title}
+				institution={entry.institution}
+				period={entry.period}
 				html={entry.html}
 			/>
 		))}
