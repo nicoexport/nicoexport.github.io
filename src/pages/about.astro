@@ -1,11 +1,32 @@
 ---
 import AboutHeroImage from '../assets/about-me-header.png';
 import Layout from '../layouts/BlogPost.astro';
+import ExperienceEntry from '../components/ExperienceEntry.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
 const _allProjects = await getCollection('projects');
 const selectedProjects = _allProjects.filter((p) => (p.data && (p.data.selected === true || (p.data.tags && p.data.tags.includes('selected')))));
+const experienceEntries = await getCollection('experience');
+
+const experience = experienceEntries.map((entry) => ({
+	...entry.data,
+	html: entry.rendered?.html || '',
+}));
+
+const sortedExperience = experience.sort((a, b) => {
+	const aYears = a.years;
+	const bYears = b.years;
+	// Prioritize ongoing positions (with "present")
+	const aIsPresent = aYears.includes('present');
+	const bIsPresent = bYears.includes('present');
+	if (aIsPresent && !bIsPresent) return -1;
+	if (!aIsPresent && bIsPresent) return 1;
+	// Otherwise sort by year descending
+	const aFirstYear = parseInt(aYears.split('–')[0].trim());
+	const bFirstYear = parseInt(bYears.split('–')[0].trim());
+	return bFirstYear - aFirstYear;
+});
 ---
 
 <Layout
@@ -19,6 +40,18 @@ const selectedProjects = _allProjects.filter((p) => (p.data && (p.data.selected 
 		I am a game developer with hands-on experience in Unity and Godot, specializing in gameplay systems, tools development, and graphics programming.
 		I am currently completing an MSc in Videogame Studies while teaching game development at university level and having shipped a commercial project.
 	</p>
+
+	<section class="work-experience">
+		<h3>Work Experience</h3>
+		{sortedExperience.map((entry) => (
+			<ExperienceEntry 
+				title={entry.title}
+				company={entry.company}
+				years={entry.years}
+				html={entry.html}
+			/>
+		))}
+	</section>
 
 	<style>
 		.selected-projects ul { display:flex; flex-wrap:wrap; gap:2rem; list-style:none; margin:0; padding:0 }
