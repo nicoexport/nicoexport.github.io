@@ -1,4 +1,16 @@
-# Projects
+
+# TODO 
+General 
+- HOW TO HOST ON GITHUB
+- Change Styling
+    - font
+- LinkedIn link
+- Footer Links
+
+- Contact Page
+
+About Me Page
+- CV
 
 
 # Layout

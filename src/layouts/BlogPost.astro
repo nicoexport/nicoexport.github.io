@@ -9,7 +9,7 @@ import ItchIconUrl from '../assets/icons/itch.svg?url';
 
 type Props = CollectionEntry<'projects'>['data'];
 
-const { title, description, year, updatedDate, heroImage, github, steam, itch } = Astro.props as Props;
+const { title, description, year, updatedDate, heroImage, github, steam, itch, category } = Astro.props as Props;
 const heroPortrait = (Astro.props as any).heroPortrait ?? false;
 ---
 
@@ -143,6 +143,7 @@ const heroPortrait = (Astro.props as any).heroPortrait ?? false;
 							}
 						</div>
 						<h1>{title}</h1>
+						<p>{category && <div class="category">{category}</div>}</p>
 						<hr />
 					</div>
 					<slot />
