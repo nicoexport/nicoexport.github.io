@@ -1,11 +1,12 @@
 
 # TODO 
 General 
-- HOW TO HOST ON GITHUB
 - Change Styling
     - font
-
+    - tab icon
 - Contact Page
+- discord preview 
+![alt text](image.png)
 
 About Me Page
 - CV
