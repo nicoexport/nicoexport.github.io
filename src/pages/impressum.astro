@@ -1,0 +1,90 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+
+const title = 'Impressum';
+const description = 'Impressum.';
+
+const legalEntity = 'Nico Auerswald';
+const address = ['Kirchgasse 12', '95444 Bayreuth', 'Germany'];
+const contactPhone = '+49 173 6835604';
+const contactEmail = 'auersw.nico@gmail.com';
+const managingDirector = 'Nico Auerswald';
+const lastUpdated = '06 January 2026';
+---
+
+<html lang="de">
+<head>
+	<BaseHead title={title} description={description} />
+	<style>
+		main {
+			width: 720px;
+			max-width: calc(100% - 2em);
+			margin: 0 auto;
+			padding: 2em 0 4em 0;
+			color: rgb(var(--gray-dark));
+		}
+		h1 {
+			margin: 0 0 0.75em 0;
+		}
+		section {
+			margin-bottom: 1.5em;
+		}
+		h2 {
+			margin: 0 0 0.35em 0;
+		}
+		ul {
+			margin: 0;
+			padding-left: 1.1em;
+		}
+		li {
+			margin-bottom: 0.35em;
+		}
+		.meta {
+			color: rgb(var(--gray));
+			font-size: 0.95em;
+		}
+	</style>
+</head>
+
+<body>
+	<Header />
+	<main>
+		<h1>Impressum</h1>
+
+		<section>
+			<h2>Betreiber</h2>
+			<p>{legalEntity}</p>
+			<ul>
+				{address.map((line) => (
+					<li>{line}</li>
+				))}
+			</ul>
+		</section>
+
+		<section>
+			<h2>Kontakt</h2>
+			<ul>
+				<li>Telefon: {contactPhone}</li>
+				<li>E-Mail: <a href={`mailto:${contactEmail}`}>{contactEmail}</a></li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Urheberrecht</h2>
+			<p>
+				Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht.
+				Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+				Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.
+				Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet und entsprechende Inhalte gekennzeichnet.
+				Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis.
+				Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.
+			</p>
+		</section>
+
+		<p class="meta">Stand: {lastUpdated}</p>
+	</main>
+	<Footer />
+</body>
+</html>
