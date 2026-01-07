@@ -7,10 +7,11 @@ import Header from '../components/Header.astro';
 import SteamIconUrl from '../assets/icons/steam.svg?url';
 import ItchIconUrl from '../assets/icons/itch.svg?url';
 
-type Props = CollectionEntry<'projects'>['data'];
+type Props = CollectionEntry<'projects'>['data'] & {
+	heroPortrait?: boolean;
+};
 
-const { title, description, year, updatedDate, heroImage, github, steam, itch, category } = Astro.props as Props;
-const heroPortrait = (Astro.props as any).heroPortrait ?? false;
+const { title, description, year, updatedDate, heroImage, github, steam, itch, category, heroPortrait = false } = Astro.props as Props;
 ---
 
 <html lang="en">

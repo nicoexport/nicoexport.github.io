@@ -54,6 +54,7 @@ const sortedEducation = education.sort((a, b) => {
 <Layout
 	title="About Me"
 	description="Nico Auerswald - Game Developer."
+	year="2024"
 	heroImage={AboutHeroImage}
 	heroPortrait={true}
 >
@@ -70,8 +71,7 @@ const sortedEducation = education.sort((a, b) => {
 		.selected-projects__arrow { border:1px solid rgb(var(--black)); background:transparent; color:rgb(var(--black)); padding:0.4rem 0.7rem; border-radius:999px; cursor:pointer; transition:background 160ms ease, color 160ms ease; }
 		.selected-projects__arrow:hover { background:rgb(var(--black)); color:rgb(var(--white)); }
 		.selected-projects__viewport { overflow:hidden; position:relative; }
-		.selected-projects__track { display:flex; gap:1.5rem; list-style:none; margin:0; padding:0.25rem 0; scroll-behavior:smooth; }
-		.selected-projects__track--no-transition { scroll-behavior:auto !important; }
+		.selected-projects__track { display:flex; gap:1.5rem; list-style:none; margin:0; padding:0.25rem 0; }
 		.selected-projects__card { flex:0 0 calc((100% - 3rem) / 3); max-width:360px; min-width:260px; }
 		.selected-projects__link { text-decoration:none; display:block; color:inherit; }
 		.selected-projects__image { margin-bottom:0.5rem; border-radius:12px; width:100%; height:auto; aspect-ratio:2 / 1; object-fit:cover; display:block; }
@@ -114,101 +114,121 @@ const sortedEducation = education.sort((a, b) => {
 				</ul>
 			</div>
 		</section>
+	)}
 
-		<script>
-			if (typeof window !== 'undefined') {
-				const viewport = document.querySelector('[data-slider]');
-				const track = viewport?.querySelector('.selected-projects__track');
-				const prevButton = document.querySelector('[data-direction="prev"]');
-				const nextButton = document.querySelector('[data-direction="next"]');
-				const originalCards = Array.from(track?.querySelectorAll('.selected-projects__card') || []);
+	<script>
+		if (typeof window !== 'undefined') {
+			const viewport = document.querySelector('[data-slider]');
+			const track = viewport?.querySelector('.selected-projects__track');
+			const prevButton = document.querySelector('[data-direction="prev"]');
+			const nextButton = document.querySelector('[data-direction="next"]');
+			const originalCards = Array.from(track?.querySelectorAll('.selected-projects__card') || []);
 
-				if (viewport && track && prevButton && nextButton && originalCards.length) {
-					// Clone cards for infinite loop
-					const cloneBefore = originalCards.map(card => card.cloneNode(true));
-					const cloneAfter = originalCards.map(card => card.cloneNode(true));
-					cloneBefore.reverse().forEach(clone => track.insertBefore(clone, track.firstChild));
-					cloneAfter.forEach(clone => track.appendChild(clone));
+			if (viewport && track && prevButton && nextButton && originalCards.length) {
+				const cloneBefore = originalCards.map(card => card.cloneNode(true));
+				const cloneAfter = originalCards.map(card => card.cloneNode(true));
+				cloneBefore.reverse().forEach(clone => track.insertBefore(clone, track.firstChild));
+				cloneAfter.forEach(clone => track.appendChild(clone));
 
-					const allCards = Array.from(track.querySelectorAll('.selected-projects__card'));
-					const originalLength = originalCards.length;
-					let currentIndex = originalLength; // Start at first real card
-					let isTransitioning = false;
+				const allCards = Array.from(track.querySelectorAll('.selected-projects__card')) as HTMLElement[];
+				const originalLength = originalCards.length;
+				let currentIndex = originalLength;
+				let isScrolling = false;
+				let scrollEndTimer: NodeJS.Timeout | null = null;
+				let pendingInput: number | null = null;
 
-					const getCardCenter = (card) => card.offsetLeft + card.clientWidth / 2;
-					const getViewportCenter = () => viewport.scrollLeft + viewport.clientWidth / 2;
+				const getCardCenter = (card: HTMLElement) => card.offsetLeft + card.clientWidth / 2;
+				const getViewportCenter = () => (viewport as HTMLElement).scrollLeft + viewport.clientWidth / 2;
 
-					const scrollToCard = (index, smooth = true) => {
-						const card = allCards[index];
-						if (!card) return;
-						const offset = card.offsetLeft - (viewport.clientWidth - card.clientWidth) / 2;
-						track.style.scrollBehavior = smooth ? 'smooth' : 'auto';
-						viewport.scrollTo({ left: offset, behavior: 'auto' });
-					};
+				const scrollToCard = (index: number, smooth = true) => {
+					const card = allCards[index];
+					if (!card) return;
+					const offset = card.offsetLeft - ((viewport as HTMLElement).clientWidth - card.clientWidth) / 2;
+					(viewport as HTMLElement).scrollTo({ left: offset, behavior: smooth ? 'smooth' : 'auto' });
+				};
 
-					const handleInfiniteLoop = () => {
-						if (isTransitioning) return;
-						
-						// If we're viewing a clone, jump to the real card
-						if (currentIndex < originalLength) {
-							// We're in the "before" clones
-							isTransitioning = true;
-							const realIndex = originalLength + currentIndex;
-							scrollToCard(realIndex, false);
-							currentIndex = realIndex;
-							setTimeout(() => isTransitioning = false, 50);
-						} else if (currentIndex >= originalLength * 2) {
-							// We're in the "after" clones
-							isTransitioning = true;
-							const realIndex = currentIndex - originalLength;
-							scrollToCard(realIndex, false);
-							currentIndex = realIndex;
-							setTimeout(() => isTransitioning = false, 50);
+				const handleInfiniteLoop = () => {
+					if (currentIndex < originalLength) {
+						const realIndex = originalLength + currentIndex;
+						currentIndex = realIndex;
+						scrollToCard(realIndex, false);
+					} else if (currentIndex >= originalLength * 2) {
+						const realIndex = currentIndex - originalLength;
+						currentIndex = realIndex;
+						scrollToCard(realIndex, false);
+					}
+				};
+
+				const findNearestIndex = () => {
+					const center = getViewportCenter();
+					let nearest = currentIndex;
+					let bestDistance = Infinity;
+					allCards.forEach((card, idx) => {
+						const distance = Math.abs(getCardCenter(card) - center);
+						if (distance < bestDistance) {
+							bestDistance = distance;
+							nearest = idx;
 						}
-					};
+					});
+					return nearest;
+				};
 
-					const findNearestIndex = () => {
-						const center = getViewportCenter();
-						let nearest = currentIndex;
-						let bestDistance = Infinity;
-						allCards.forEach((card, idx) => {
-							const distance = Math.abs(getCardCenter(card) - center);
-							if (distance < bestDistance) {
-								bestDistance = distance;
-								nearest = idx;
-							}
-						});
-						return nearest;
-					};
+				const processPendingInput = () => {
+					if (pendingInput !== null && !isScrolling) {
+						const direction = pendingInput;
+						pendingInput = null;
+						goTo(direction);
+					}
+				};
 
-					const goTo = (direction) => {
-						if (isTransitioning) return;
-						currentIndex = currentIndex + direction;
-						scrollToCard(currentIndex, true);
-						setTimeout(handleInfiniteLoop, 500);
-					};
+				const goTo = (direction: number) => {
+					if (isScrolling) return;
+					isScrolling = true;
+					currentIndex = currentIndex + direction;
+					scrollToCard(currentIndex, true);
+				};
 
-					let scrollTimeout;
-					viewport.addEventListener('scroll', () => {
-						clearTimeout(scrollTimeout);
-						scrollTimeout = setTimeout(() => {
-							currentIndex = findNearestIndex();
-							handleInfiniteLoop();
-						}, 150);
-					}, { passive: true });
+				viewport.addEventListener('scroll', () => {
+					if (scrollEndTimer !== null) {
+						clearTimeout(scrollEndTimer);
+					}
+					scrollEndTimer = setTimeout(() => {
+						isScrolling = false;
+						const nearestIndex = findNearestIndex();
+						if (nearestIndex !== currentIndex) {
+							currentIndex = nearestIndex;
+						}
+						handleInfiniteLoop();
+						processPendingInput();
+					}, 50);
+				}, { passive: true });
 
-					prevButton.addEventListener('click', () => goTo(-1));
-					nextButton.addEventListener('click', () => goTo(1));
-					window.addEventListener('resize', () => scrollToCard(currentIndex, false));
-					
-					// Initialize at first real card
+				prevButton.addEventListener('click', () => {
+					if (isScrolling) {
+						pendingInput = -1;
+					} else {
+						goTo(-1);
+					}
+				});
+				
+				nextButton.addEventListener('click', () => {
+					if (isScrolling) {
+						pendingInput = 1;
+					} else {
+						goTo(1);
+					}
+				});
+				
+				window.addEventListener('resize', () => {
 					scrollToCard(currentIndex, false);
-				}
+				});
+				
+				scrollToCard(currentIndex, false);
 			}
-		</script>
+		}
+	</script>
 
 	<section class="work-experience">
-		<p>
 		<h4>Work Experience</h4>
 		{sortedExperience.map((entry) => (
 			<ExperienceEntry 
@@ -218,11 +238,9 @@ const sortedEducation = education.sort((a, b) => {
 				html={entry.html}
 			/>
 		))}
-		</p>
 	</section>
 
 	<section class="education">
-		<p>
 		<h4>Education</h4>
 		{sortedEducation.map((entry) => (
 			<EducationEntry 
@@ -232,7 +250,5 @@ const sortedEducation = education.sort((a, b) => {
 				html={entry.html}
 			/>
 		))}
-		</p>
 	</section>
-	)}
 </Layout>
