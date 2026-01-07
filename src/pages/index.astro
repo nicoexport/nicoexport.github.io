@@ -10,6 +10,7 @@ const _allProjects = await getCollection('projects');
 const selectedProjects = _allProjects.filter((p) => (p.data && (p.data.selected === true || (p.data.tags && p.data.tags.includes('selected')))));
 const experienceEntries = await getCollection('experience');
 const educationEntries = await getCollection('education');
+const showProjectControls = selectedProjects.length > 1;
 
 const experience = experienceEntries.map((entry) => ({
 	...entry.data,
@@ -63,33 +64,148 @@ const sortedEducation = education.sort((a, b) => {
 
 	
 	<style>
-		.selected-projects ul { display:flex; flex-wrap:wrap; gap:2rem; list-style:none; margin:0; padding:0 }
-		.selected-projects ul li { width: calc(50% - 1rem); }
-		.selected-projects ul li a { text-decoration:none; display:block; color:inherit }
-		.selected-projects ul li img { margin-bottom:0.5rem; border-radius:12px; width:100%; height:auto; aspect-ratio:2 / 1; object-fit:cover; display:block }
-		.selected-projects h2 { margin-top:2rem; }
-		.selected-projects h4 { margin:0; color: rgb(var(--black)); line-height:1 }
-		.selected-projects p { margin:0; color: rgb(var(--gray)) }
-		</style>
+		.selected-projects { margin-top:2rem; display:flex; flex-direction:column; gap:1rem; }
+		.selected-projects__head { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+		.selected-projects__controls { display:flex; align-items:center; gap:0.5rem; }
+		.selected-projects__arrow { border:1px solid rgb(var(--black)); background:transparent; color:rgb(var(--black)); padding:0.4rem 0.7rem; border-radius:999px; cursor:pointer; transition:background 160ms ease, color 160ms ease; }
+		.selected-projects__arrow:hover { background:rgb(var(--black)); color:rgb(var(--white)); }
+		.selected-projects__viewport { overflow:hidden; position:relative; }
+		.selected-projects__track { display:flex; gap:1.5rem; list-style:none; margin:0; padding:0.25rem 0; scroll-behavior:smooth; }
+		.selected-projects__track--no-transition { scroll-behavior:auto !important; }
+		.selected-projects__card { flex:0 0 calc((100% - 3rem) / 3); max-width:360px; min-width:260px; }
+		.selected-projects__link { text-decoration:none; display:block; color:inherit; }
+		.selected-projects__image { margin-bottom:0.5rem; border-radius:12px; width:100%; height:auto; aspect-ratio:2 / 1; object-fit:cover; display:block; }
+		.selected-projects h3 { margin:0; }
+		.selected-projects h4 { margin:0 0 0.1rem 0; color: rgb(var(--black)); line-height:1; }
+		.selected-projects p { margin:0; color: rgb(var(--gray)); }
+		.selected-projects__track::-webkit-scrollbar { display:none; }
+		@media (max-width: 960px) {
+			.selected-projects__card { flex:0 0 calc((100% - 1.5rem) / 2); max-width:380px; min-width:240px; }
+		}
+		@media (max-width: 640px) {
+			.selected-projects__card { flex-basis: clamp(220px, 80vw, 320px); max-width:none; }
+		}
+	</style>
 
 	{selectedProjects.length > 0 && (
 		<section class="selected-projects">
-			<h3>Selected Projects</h3>
-			<ul>
-				{selectedProjects.map((post) => (
-					<li>
-						<a href={`/projects/${post.id}/`}>
-							{post.data.heroImage && (
-								<Image width={720} height={360} src={post.data.heroImage} alt="" />
-							)}
-							<h4>{post.data.title}</h4>
-							<p>{post.data.year}</p>
-							{/* <p>{post.data.description}</p> */}
-						</a>
-					</li>
-				))}
-			</ul>
+			<div class="selected-projects__head">
+				<h3>Selected Projects</h3>
+				{showProjectControls && (
+					<div class="selected-projects__controls" aria-label="Selected projects navigation">
+						<button class="selected-projects__arrow" type="button" data-direction="prev" aria-label="Previous projects">&larr;</button>
+						<button class="selected-projects__arrow" type="button" data-direction="next" aria-label="Next projects">&rarr;</button>
+					</div>
+				)}
+			</div>
+			<div class="selected-projects__viewport" data-slider>
+				<ul class="selected-projects__track">
+					{selectedProjects.map((post) => (
+						<li class="selected-projects__card">
+							<a class="selected-projects__link" href={`/projects/${post.id}/`}>
+								{post.data.heroImage && (
+									<Image class="selected-projects__image" width={720} height={360} src={post.data.heroImage} alt="" />
+								)}
+								<h4>{post.data.title}</h4>
+								<p>{post.data.year}</p>
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
 		</section>
+
+		<script>
+			if (typeof window !== 'undefined') {
+				const viewport = document.querySelector('[data-slider]');
+				const track = viewport?.querySelector('.selected-projects__track');
+				const prevButton = document.querySelector('[data-direction="prev"]');
+				const nextButton = document.querySelector('[data-direction="next"]');
+				const originalCards = Array.from(track?.querySelectorAll('.selected-projects__card') || []);
+
+				if (viewport && track && prevButton && nextButton && originalCards.length) {
+					// Clone cards for infinite loop
+					const cloneBefore = originalCards.map(card => card.cloneNode(true));
+					const cloneAfter = originalCards.map(card => card.cloneNode(true));
+					cloneBefore.reverse().forEach(clone => track.insertBefore(clone, track.firstChild));
+					cloneAfter.forEach(clone => track.appendChild(clone));
+
+					const allCards = Array.from(track.querySelectorAll('.selected-projects__card'));
+					const originalLength = originalCards.length;
+					let currentIndex = originalLength; // Start at first real card
+					let isTransitioning = false;
+
+					const getCardCenter = (card) => card.offsetLeft + card.clientWidth / 2;
+					const getViewportCenter = () => viewport.scrollLeft + viewport.clientWidth / 2;
+
+					const scrollToCard = (index, smooth = true) => {
+						const card = allCards[index];
+						if (!card) return;
+						const offset = card.offsetLeft - (viewport.clientWidth - card.clientWidth) / 2;
+						track.style.scrollBehavior = smooth ? 'smooth' : 'auto';
+						viewport.scrollTo({ left: offset, behavior: 'auto' });
+					};
+
+					const handleInfiniteLoop = () => {
+						if (isTransitioning) return;
+						
+						// If we're viewing a clone, jump to the real card
+						if (currentIndex < originalLength) {
+							// We're in the "before" clones
+							isTransitioning = true;
+							const realIndex = originalLength + currentIndex;
+							scrollToCard(realIndex, false);
+							currentIndex = realIndex;
+							setTimeout(() => isTransitioning = false, 50);
+						} else if (currentIndex >= originalLength * 2) {
+							// We're in the "after" clones
+							isTransitioning = true;
+							const realIndex = currentIndex - originalLength;
+							scrollToCard(realIndex, false);
+							currentIndex = realIndex;
+							setTimeout(() => isTransitioning = false, 50);
+						}
+					};
+
+					const findNearestIndex = () => {
+						const center = getViewportCenter();
+						let nearest = currentIndex;
+						let bestDistance = Infinity;
+						allCards.forEach((card, idx) => {
+							const distance = Math.abs(getCardCenter(card) - center);
+							if (distance < bestDistance) {
+								bestDistance = distance;
+								nearest = idx;
+							}
+						});
+						return nearest;
+					};
+
+					const goTo = (direction) => {
+						if (isTransitioning) return;
+						currentIndex = currentIndex + direction;
+						scrollToCard(currentIndex, true);
+						setTimeout(handleInfiniteLoop, 500);
+					};
+
+					let scrollTimeout;
+					viewport.addEventListener('scroll', () => {
+						clearTimeout(scrollTimeout);
+						scrollTimeout = setTimeout(() => {
+							currentIndex = findNearestIndex();
+							handleInfiniteLoop();
+						}, 150);
+					}, { passive: true });
+
+					prevButton.addEventListener('click', () => goTo(-1));
+					nextButton.addEventListener('click', () => goTo(1));
+					window.addEventListener('resize', () => scrollToCard(currentIndex, false));
+					
+					// Initialize at first real card
+					scrollToCard(currentIndex, false);
+				}
+			}
+		</script>
 
 	<section class="work-experience">
 		<p>
