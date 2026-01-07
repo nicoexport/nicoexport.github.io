@@ -54,7 +54,7 @@ const sortedEducation = education.sort((a, b) => {
 <Layout
 	title="About Me"
 	description="Nico Auerswald - Game Developer."
-	year="2024"
+	year=""
 	heroImage={AboutHeroImage}
 	heroPortrait={true}
 >
@@ -66,11 +66,11 @@ const sortedEducation = education.sort((a, b) => {
 	
 	<style>
 		.selected-projects { margin-top:2rem; display:flex; flex-direction:column; gap:1rem; }
-		.selected-projects__head { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+		.selected-projects__head { display:flex; align-items:center; justify-content:space-between; gap:1rem;}
 		.selected-projects__controls { display:flex; align-items:center; gap:0.5rem; }
 		.selected-projects__arrow { border:1px solid rgb(var(--black)); background:transparent; color:rgb(var(--black)); padding:0.4rem 0.7rem; border-radius:999px; cursor:pointer; transition:background 160ms ease, color 160ms ease; }
 		.selected-projects__arrow:hover { background:rgb(var(--black)); color:rgb(var(--white)); }
-		.selected-projects__viewport { overflow:hidden; position:relative; mask-image:linear-gradient(90deg, transparent, black 4%, black 96%, transparent); }
+		.selected-projects__viewport { overflow:hidden; position:relative; mask-image:linear-gradient(90deg, transparent, black 4%, black 96%, transparent); margin-bottom: 4rem; }
 		.selected-projects__track { display:flex; gap:1.5rem; list-style:none; margin:0; padding:0.25rem 0; }
 		.selected-projects__card { flex:0 0 calc((100% - 3rem) / 3); max-width:360px; min-width:260px; }
 		.selected-projects__link { text-decoration:none; display:block; color:inherit; }
@@ -90,7 +90,7 @@ const sortedEducation = education.sort((a, b) => {
 	{selectedProjects.length > 0 && (
 		<section class="selected-projects">
 			<div class="selected-projects__head">
-				<h3>Selected Projects</h3>
+				<h4>Selected Projects</h4>
 				{showProjectControls && (
 					<div class="selected-projects__controls" aria-label="Selected projects navigation">
 						<button class="selected-projects__arrow" type="button" data-direction="prev" aria-label="Previous projects">&larr;</button>
