@@ -47,8 +47,8 @@ const orderedCategories = categoryOrder.filter(cat => postsByCategory[cat]).conc
       .category-section h2 { margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgb(var(--accent)); }
       ul { display:flex; flex-wrap:wrap; gap:2rem; list-style:none; margin:0; padding:0 }
       ul li { width: calc(50% - 1rem); }
-      ul li a { text-decoration: none; display: block; }
-      ul li img { 
+      ul li > a { text-decoration: none; display: block; }
+      ul li > a > img { 
         margin-bottom: 0.5rem; 
         border-radius: 12px;
         width: 100%;
@@ -57,20 +57,20 @@ const orderedCategories = categoryOrder.filter(cat => postsByCategory[cat]).conc
         object-fit: cover;
         display: block;
       }
-      .card-links { display:flex; gap:0.5rem; margin-top:0.5rem; align-items:center; line-height:0; }
-      .card-links a { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:6px; background: rgba(var(--gray),0.04); text-decoration:none; color:inherit; vertical-align:middle; position:relative; }
+      .card-links { display:flex; gap:0.5rem; align-items:center; flex-shrink:0; }
+      .card-links a { display:inline-block; text-decoration:none; color:inherit; flex-shrink:0; line-height:0; }
       .card-links img {
+        width:22px !important;
+        height:22px !important;
         display:block;
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-        height:60%;
-        max-height:20px;
-        width:auto;
-        max-width:80%;
+        object-fit:contain;
+        margin-bottom:0;
+        border-radius:0;
+        aspect-ratio:auto;
       }
-      .title { margin:0; color: rgb(var(--black)); line-height:1 }
+      .title-row { display: flex; align-items: center; gap: 0.75rem; margin: 0; flex-wrap:nowrap; }
+      .title-row a { flex-shrink:1; min-width:0; text-decoration:none; }
+      .title { margin:0; color: rgb(var(--black)); line-height:1.2; font-size:1.4rem; }
       .date { margin:0; color: rgb(var(--gray)) }
     </style>
   </head>
@@ -87,31 +87,36 @@ const orderedCategories = categoryOrder.filter(cat => postsByCategory[cat]).conc
                   <li>
                     <a href={`/projects/${post.id}/`}>
                       {post.data.heroImage && (<Image width={720} height={360} src={post.data.heroImage} alt="" />)}
-                      <h4 class="title">{post.data.title}</h4>
-                      <p class="date">{post.data.year}</p>
-                      <p class="date">{post.data.description}</p>
                     </a>
-                    {
-                      ((post.data.github && post.data.github.trim()) || (post.data.steam && post.data.steam.trim()) || (post.data.itch && post.data.itch.trim())) && (
-                        <div class="card-links">
-                          {post.data.github && post.data.github.trim() && (
-                            <a href={post.data.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                              <img src={GitHubIconUrl} alt="GitHub" />
-                            </a>
-                          )}
-                          {post.data.steam && post.data.steam.trim() && (
-                            <a href={post.data.steam} target="_blank" rel="noopener noreferrer" aria-label="Steam">
-                              <img src={SteamIconUrl} alt="Steam" />
-                            </a>
-                          )}
-                          {post.data.itch && post.data.itch.trim() && (
-                            <a href={post.data.itch} target="_blank" rel="noopener noreferrer" aria-label="itch.io">
-                              <img src={ItchIconUrl} alt="itch.io" />
-                            </a>
-                          )}
-                        </div>
-                      )
-                    }
+                    <div class="title-row">
+                      <a href={`/projects/${post.id}/`}>
+                        <h4 class="title">{post.data.title}</h4>
+                      </a>
+                      {
+                        ((post.data.github && post.data.github.trim()) || (post.data.steam && post.data.steam.trim()) || (post.data.itch && post.data.itch.trim())) && (
+                          <div class="card-links">
+                            {post.data.github && post.data.github.trim() && (
+                              <a href={post.data.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                                <img src={GitHubIconUrl} alt="GitHub" />
+                              </a>
+                            )}
+                            {post.data.steam && post.data.steam.trim() && (
+                              <a href={post.data.steam} target="_blank" rel="noopener noreferrer" aria-label="Steam">
+                                <img src={SteamIconUrl} alt="Steam" />
+                              </a>
+                            )}
+                            {post.data.itch && post.data.itch.trim() && (
+                              <a href={post.data.itch} target="_blank" rel="noopener noreferrer" aria-label="itch.io">
+                                <img src={ItchIconUrl} alt="itch.io" />
+                              </a>
+                            )}
+                          </div>
+                        )
+                      }
+                    </div>
+                    <a href={`/projects/${post.id}/`}>
+                      <p class="date">{post.data.year}</p>
+                    </a>
                   </li>
                 ))
               }
