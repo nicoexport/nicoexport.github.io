@@ -70,14 +70,14 @@ const sortedEducation = education.sort((a, b) => {
 		.selected-projects__controls { display:flex; align-items:center; gap:0.5rem; }
 		.selected-projects__arrow { border:1px solid rgb(var(--black)); background:transparent; color:rgb(var(--black)); padding:0.4rem 0.7rem; border-radius:999px; cursor:pointer; transition:background 160ms ease, color 160ms ease; }
 		.selected-projects__arrow:hover { background:rgb(var(--black)); color:rgb(var(--white)); }
-		.selected-projects__viewport { overflow:hidden; position:relative; }
+		.selected-projects__viewport { overflow:hidden; position:relative; mask-image:linear-gradient(90deg, transparent, black 4%, black 96%, transparent); }
 		.selected-projects__track { display:flex; gap:1.5rem; list-style:none; margin:0; padding:0.25rem 0; }
 		.selected-projects__card { flex:0 0 calc((100% - 3rem) / 3); max-width:360px; min-width:260px; }
 		.selected-projects__link { text-decoration:none; display:block; color:inherit; }
 		.selected-projects__image { margin-bottom:0.5rem; border-radius:12px; width:100%; height:auto; aspect-ratio:2 / 1; object-fit:cover; display:block; }
 		.selected-projects h3 { margin:0; }
-		.selected-projects h4 { margin:0 0 0.1rem 0; color: rgb(var(--black)); line-height:1; }
-		.selected-projects p { margin:0; color: rgb(var(--gray)); }
+		.selected-projects h5 { margin:0 0 0.1rem 0; color: rgb(var(--black)); line-height:1; font-size: 1.2rem; }
+		.selected-projects p { margin:0; color: rgb(var(--gray)); font-size: 1rem; }
 		.selected-projects__track::-webkit-scrollbar { display:none; }
 		@media (max-width: 960px) {
 			.selected-projects__card { flex:0 0 calc((100% - 1.5rem) / 2); max-width:380px; min-width:240px; }
@@ -106,8 +106,9 @@ const sortedEducation = education.sort((a, b) => {
 								{post.data.heroImage && (
 									<Image class="selected-projects__image" width={720} height={360} src={post.data.heroImage} alt="" />
 								)}
-								<h4>{post.data.title}</h4>
-								<p>{post.data.year}</p>
+								<h5>{post.data.title}</h5>
+								{/* <p>{post.data.year}</p> */}
+								<p>{post.data.category}</p>
 							</a>
 						</li>
 					))}
