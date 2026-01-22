@@ -6,3 +6,4 @@ export const SITE_DESCRIPTION = 'Welcome to my website!';
 // Optional link to your itch.io profile (leave empty to hide the icon)
 export const ITCH_URL = 'https://nico-export.itch.io/';
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/nico-auerswald-b905711b4/';
+export const GITHUB_URL = 'https://github.com/nicoexport';
