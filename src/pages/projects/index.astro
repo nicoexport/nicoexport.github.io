@@ -9,7 +9,7 @@ import SteamIconUrl from '../../assets/icons/steam.svg?url';
 import ItchIconUrl from '../../assets/icons/itch.svg?url';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
-const posts = (await getCollection('projects'));
+const posts = (await getCollection('projects')).filter(post => !post.data.draft);
 
 // Sort by start year (handles single year or ranges like "2019-2021")
 posts.sort((a, b) => {

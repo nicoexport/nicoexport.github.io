@@ -18,6 +18,8 @@ const projects = defineCollection({
 				selected: z.boolean().optional(),
 				// Optional tags array (e.g. ['selected'])
 				tags: z.array(z.string()).optional(),
+			// Hide draft projects from being displayed
+			draft: z.boolean().optional(),
 			// Optional external links to the project
 			github: z.string().url().optional(),
 			steam: z.string().url().optional(),
